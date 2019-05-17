@@ -1,22 +1,25 @@
-package com.java.concurrency.example.count;
+package com.java.concurrency.syncContainer;
 
-import com.java.concurrency.annotations.ThreadUnSafe;
+import com.java.concurrency.commonUnsafe.ArrayListExample;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.concurrent.ThreadSafe;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 
 @Slf4j
-@ThreadUnSafe
-public class CountExample1 {
-
+@ThreadSafe
+public class VectorExample {
     private static int requestTotal = 5000;
 
     private static int concurrencyNum = 200;
 
-    private static int count = 0;
+    private static Vector<Integer> list = new Vector<>();
 
     public static void main(String[] args) throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(requestTotal);
@@ -26,7 +29,7 @@ public class CountExample1 {
             service.execute(() ->{
                 try {
                     semaphore.acquire();
-                    CountExample1.add();
+                    VectorExample.add();
                     semaphore.release();
                     //每次计数减1
                     countDownLatch.countDown();
@@ -37,9 +40,9 @@ public class CountExample1 {
         }
         countDownLatch.await();
         service.shutdown();
-        log.info("count:{}",count);
+        log.info("size:{}",list.size());
     }
     private static void add(){
-        count ++;
+        list.add(1);
     }
 }
